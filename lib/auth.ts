@@ -6,7 +6,7 @@ export const auth = betterAuth({
     line: {
       clientId: process.env.LINE_CLIENT_ID as string,
       clientSecret: process.env.LINE_CLIENT_SECRET as string,
-      redirectURI: "http://localhost:3000/api/auth/callback/line",
+      redirectURI: `${process.env.BASE_URL}/api/auth/callback/line`,
       scope: ["profile", "openid", "email"],
       mapProfileToUser: ({ email, sub }) => ({
         email: email ?? `${sub}@line.user`,
