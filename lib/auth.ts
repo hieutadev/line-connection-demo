@@ -1,3 +1,4 @@
+import { dash } from "@better-auth/infra";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
@@ -19,7 +20,10 @@ const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
   },
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    dash({ apiKey: process.env.BETTER_AUTH_API_KEY }),
+  ],
 });
 
 export default auth;
