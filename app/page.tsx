@@ -1,15 +1,20 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleSignOut = () => {
-    signOut(() => router.replace('/sign-in'))
-  }
+    startTransition(async () => {
+      await signOut();
+      setTimeout(() => router.replace("/sign-in"));
+    });
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 p-6 dark:bg-black">
@@ -21,6 +26,7 @@ export default function Home() {
           variant="outline"
           className="w-full"
           onClick={handleSignOut}
+          disabled={isPending}
         >
           Sign Out
         </Button>

@@ -1,4 +1,4 @@
-
+import lineBotClient from "@/lib/line-bot";
 import { validateSignature } from "@line/bot-sdk";
 
 export async function POST(request: Request) {
@@ -6,7 +6,11 @@ export async function POST(request: Request) {
   const signature = request.headers.get("x-line-signature") ?? "";
 
   // 1. Verify signature with native crypto
-  const isValid = validateSignature(body, process.env.LINE_CHANNEL_SECRET!, signature);
+  const isValid = validateSignature(
+    body,
+    process.env.LINE_CHANNEL_SECRET!,
+    signature,
+  );
 
   if (!isValid) {
     return new Response("Unauthorized", { status: 401 });
@@ -18,17 +22,10 @@ export async function POST(request: Request) {
   // 3. Handle events asynchronously
   for (const event of payload.events) {
     if (event.type === "message" && event.message.type === "text") {
-      // 4. Reply using native fetch() instead of https.request
-      await fetch("https://api.line.me/v2/bot/message/reply", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.LINE_CHANNEL_ACCESS_TOKEN}`,
-        },
-        body: JSON.stringify({
-          replyToken: event.replyToken,
-          messages: [{ type: "text", text: "Hello, user" }],
-        }),
+      // 4. Reply message with SDK
+      await lineBotClient.replyMessage({
+        replyToken: event.replyToken,
+        messages: [{ type: "text", text: "Hello, user" }],
       });
     }
   }

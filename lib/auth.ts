@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
-export const auth = betterAuth({
+const auth = betterAuth({
   socialProviders: {
     line: {
       clientId: process.env.LINE_CLIENT_ID as string,
@@ -21,3 +21,5 @@ export const auth = betterAuth({
   },
   plugins: [nextCookies()],
 });
+
+export default auth;
