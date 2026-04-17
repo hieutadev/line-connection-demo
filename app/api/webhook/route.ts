@@ -1,4 +1,5 @@
 import lineBotClient from "@/lib/line-bot";
+import { WebhookRequestBody } from "@/types/webhook-events";
 import { validateSignature } from "@line/bot-sdk";
 
 export async function POST(request: Request) {
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
   }
 
   // 2. Parse events
-  const payload = JSON.parse(body);
+  const payload = JSON.parse(body) as WebhookRequestBody;
   console.log(JSON.stringify(payload, null, 2))
 
   // 3. Handle events asynchronously
