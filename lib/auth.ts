@@ -9,7 +9,7 @@ const auth = betterAuth({
       clientSecret: process.env.LINE_CLIENT_SECRET as string,
       redirectURI: `${process.env.BASE_URL}/api/auth/callback/line`,
       scope: ["profile", "openid", "email"],
-      mapProfileToUser: ({ email, sub }) => ({
+      mapProfileToUser: ({ email, sub, ...a }) => ({
         email: email ?? `${sub}@line.user`,
         emailVerified: false,
       }),

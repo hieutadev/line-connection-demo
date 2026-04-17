@@ -17,8 +17,8 @@ export async function POST(request: Request) {
   }
 
   // 2. Parse events
-  console.log(`🚀 ~ POST ~ payload:`, body)
   const payload = JSON.parse(body);
+  console.log(JSON.stringify(payload, null, 2))
 
   // 3. Handle events asynchronously
   for (const event of payload.events) {
