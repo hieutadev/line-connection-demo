@@ -3,6 +3,10 @@ import { validateSignature } from "@line/bot-sdk";
 import handleMessageEvent from "./event-handlers/message";
 import handleFollowEvent from "./event-handlers/follow";
 import handleUnfollowEvent from "./event-handlers/unfollow";
+import handleJoinEvent from "./event-handlers/join";
+import handleLeaveEvent from "./event-handlers/leave";
+import handleMemberJoinedEvent from "./event-handlers/member-joined";
+import handleMemberLeftEvent from "./event-handlers/member-left";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -36,10 +40,18 @@ export async function POST(request: Request) {
         await handleUnfollowEvent(event);
         break;
       case "join":
-      case "memberJoined":
-      case "unsend":
+        await handleJoinEvent(event);
+        break;
       case "leave":
+        await handleLeaveEvent(event);
+        break;
+      case "memberJoined":
+        await handleMemberJoinedEvent(event);
+        break;
       case "memberLeft":
+        await handleMemberLeftEvent(event);
+        break;
+      case "unsend":
       case "postback":
       case "videoPlayComplete":
       case "beacon":
