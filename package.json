@@ -11,6 +11,8 @@
   "dependencies": {
     "@base-ui/react": "^1.4.0",
     "@better-auth/infra": "^0.2.3",
+    "@langchain/core": "^1.1.40",
+    "@langchain/google-genai": "^2.1.27",
     "@line/bot-sdk": "^11.0.0",
     "better-auth": "^1.6.3",
     "class-variance-authority": "^0.7.1",
