@@ -9,20 +9,26 @@ const cerebras = new Cerebras({
 export default async function handleMessageEvent(event: MessageEvent) {
   switch (event.message.type) {
     case "text":
-      const completion = await cerebras.chat.completions.create({
-        messages: [{ role: "user", content: event.message.text }],
-        model: "llama3.1-8b",
-        max_completion_tokens: 2048,
-        temperature: 0.4,
-        top_p: 1,
-        stream: false,
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const text = (completion.choices as any)[0].message.content;
-      await lineBotClient.replyMessage({
-        replyToken: event.replyToken,
-        messages: [{ type: "text", text }],
-      });
+      const isBotTrigger = event.message.text
+        .toLocaleLowerCase()
+        .trimStart()
+        .startsWith("/pika");
+      if (isBotTrigger) {
+        const completion = await cerebras.chat.completions.create({
+          messages: [{ role: "user", content: event.message.text }],
+          model: "llama3.1-8b",
+          max_completion_tokens: 2048,
+          temperature: 0.4,
+          top_p: 1,
+          stream: false,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const text = (completion.choices as any)[0].message.content;
+        await lineBotClient.replyMessage({
+          replyToken: event.replyToken,
+          messages: [{ type: "text", text }],
+        });
+      }
       break;
     case "image":
     case "video":
