@@ -1,17 +1,23 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import useBotConnectionStatus from "@/hooks/useBotConnectionStatus";
 import useUserProfile from "@/hooks/useUserProfile";
 import { signOut } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import useBotInfo from "@/hooks/useBotInfo";
 
 export default function Home() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { data, isLoading } = useUserProfile();
+  const { data: status } = useBotConnectionStatus(data?.userId);
+  const { data: botInfo } = useBotInfo();
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -21,7 +27,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 p-6 gap-6">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm flex flex-col items-center gap-3">
         <Avatar className="size-20">
           <AvatarImage src={data?.pictureUrl} alt={data?.userId} />
@@ -45,6 +51,47 @@ export default function Home() {
           Sign Out
         </Button>
       </div>
+      {botInfo && (
+        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm flex items-center gap-3">
+          <QRCodeSVG
+            value={`https://line.me/R/ti/p/${botInfo.basicId}`}
+            title="QR code for adding the bot as a friend"
+            size={80}
+            bgColor={"#ffffff"}
+            fgColor={"#000000"}
+            level={"L"}
+          />
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1 mb-1">
+              <Avatar className="size-10">
+                <AvatarImage src={botInfo.pictureUrl} alt={botInfo.basicId} />
+                <AvatarFallback>
+                  {botInfo.displayName.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <div className="flex gap-0.5 items-center">
+                  <span>{botInfo.displayName}</span>
+                  <Badge
+                    className={
+                      status
+                        ? "bg-green-50 text-green-700"
+                        : "bg-red-50 text-red-700"
+                    }
+                  >
+                    {status ? "Connected" : "Not connected"}
+                  </Badge>
+                </div>
+                <span className="text-xs text-gray-500">{botInfo.basicId}</span>
+              </div>
+            </div>
+            <span className="text-sm text-gray-600">
+              Add the bot as a friend
+            </span>
+            <span className="text-xs text-gray-500">{`https://line.me/R/ti/p/${botInfo.basicId}`}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
