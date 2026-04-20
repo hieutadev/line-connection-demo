@@ -9,13 +9,15 @@ const cerebras = new Cerebras({
 export default async function handleMessageEvent(event: MessageEvent) {
   switch (event.message.type) {
     case "text":
-      const isBotTrigger = event.message.text
-        .toLocaleLowerCase()
-        .trimStart()
-        .startsWith("/pika");
+      const isBotTrigger = event.message.text.trim().split(" ")[0].toLocaleLowerCase() === '/pika';
       if (isBotTrigger) {
         const completion = await cerebras.chat.completions.create({
-          messages: [{ role: "user", content: event.message.text }],
+          messages: [
+            {
+              role: "user",
+              content: event.message.text.trim().replace("/pika", ""),
+            },
+          ],
           model: "llama3.1-8b",
           max_completion_tokens: 2048,
           temperature: 0.4,
