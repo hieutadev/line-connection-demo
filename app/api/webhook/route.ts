@@ -1,6 +1,8 @@
 import { WebhookRequestBody } from "@/types/webhook-events";
 import { validateSignature } from "@line/bot-sdk";
 import handleMessageEvent from "./event-handlers/message";
+import handleFollowEvent from "./event-handlers/follow";
+import handleUnfollowEvent from "./event-handlers/unfollow";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -28,10 +30,14 @@ export async function POST(request: Request) {
         await handleMessageEvent(event);
         break;
       case "follow":
+        await handleFollowEvent(event);
+        break;
+      case "unfollow":
+        await handleUnfollowEvent(event);
+        break;
       case "join":
       case "memberJoined":
       case "unsend":
-      case "unfollow":
       case "leave":
       case "memberLeft":
       case "postback":
