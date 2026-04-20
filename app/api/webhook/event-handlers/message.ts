@@ -1,22 +1,27 @@
 import lineBotClient from "@/lib/line-bot";
 import { MessageEvent } from "@/types/webhook-events";
-import { HumanMessage } from "@langchain/core/messages";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import Cerebras from "@cerebras/cerebras_cloud_sdk";
 
-const model = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash" });
+const cerebras = new Cerebras({
+  apiKey: process.env.CEREBRAS_API_KEY,
+});
 
 export default async function handleMessageEvent(event: MessageEvent) {
   switch (event.message.type) {
     case "text":
-      const input = [
-        new HumanMessage({
-          content: [{ type: "text", text: event.message.text }],
-        }),
-      ];
-      const res = await model.invoke(input);
+      const completion = await cerebras.chat.completions.create({
+        messages: [{ role: "user", content: event.message.text }],
+        model: "llama3.1-8b",
+        max_completion_tokens: 2048,
+        temperature: 0.4,
+        top_p: 1,
+        stream: false,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const text = (completion.choices as any)[0].message.content;
       await lineBotClient.replyMessage({
         replyToken: event.replyToken,
-        messages: [{ type: "text", text: res.content.toString() }],
+        messages: [{ type: "text", text }],
       });
       break;
     case "image":
