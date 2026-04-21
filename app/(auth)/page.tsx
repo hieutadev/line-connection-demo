@@ -4,19 +4,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import useBotConnectionStatus from "@/hooks/useBotConnectionStatus";
+import useBotInfo from "@/hooks/useBotInfo";
 import useUserProfile from "@/hooks/useUserProfile";
 import { signOut } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { RefreshCcw } from 'lucide-react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import useBotInfo from "@/hooks/useBotInfo";
+import { useTransition } from "react";
 
 export default function Home() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { data, isLoading } = useUserProfile();
-  const { data: status } = useBotConnectionStatus(data?.userId);
+  const { data: status, mutate: mutateStatus, isLoading: isLoadingStatus } = useBotConnectionStatus(data?.userId);
   const { data: botInfo } = useBotInfo();
 
   const handleSignOut = () => {
@@ -81,6 +83,9 @@ export default function Home() {
                   >
                     {status ? "Connected" : "Not connected"}
                   </Badge>
+                  <Button className="size-5" variant="ghost" disabled={!status} onClick={() => mutateStatus()}>
+                    <RefreshCcw className={cn('size-3', isLoadingStatus && "animate-spin")} />
+                  </Button>
                 </div>
                 <span className="text-xs text-gray-500">{botInfo.basicId}</span>
               </div>
