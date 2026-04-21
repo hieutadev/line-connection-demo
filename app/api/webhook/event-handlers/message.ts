@@ -9,8 +9,11 @@ const cerebras = new Cerebras({
 export default async function handleMessageEvent(event: MessageEvent) {
   switch (event.message.type) {
     case "text":
-      const isBotTrigger = event.message.text.trim().split(" ")[0].toLocaleLowerCase() === '/pika';
-      if (isBotTrigger) {
+      const isDirectTrigger = event.source?.type === "user";
+      const isGroupTrigger =
+        event.source?.type === "group" &&
+        event.message.text.trim().toLowerCase().startsWith("/pika ");
+      if (isDirectTrigger || isGroupTrigger) {
         const completion = await cerebras.chat.completions.create({
           messages: [
             {
