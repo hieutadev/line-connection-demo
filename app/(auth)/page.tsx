@@ -9,7 +9,7 @@ import useUserProfile from "@/hooks/useUserProfile";
 import { signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { RefreshCcw } from 'lucide-react';
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { useTransition } from "react";
@@ -41,9 +41,9 @@ export default function Home() {
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 ">
           Welcome, {isLoading ? "..." : data?.displayName}
         </h1>
-        <Link href="/settings" className="w-full">
+        {/* <Link href="/settings" className="w-full">
           <Button className="w-full">Setting</Button>
-        </Link>
+        </Link> */}
         <Button
           variant="outline"
           className="w-full"
