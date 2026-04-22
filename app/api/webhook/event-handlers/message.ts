@@ -1,7 +1,6 @@
 import lineBotClient from "@/lib/line-bot";
 import { MessageEvent } from "@/types/webhook-events";
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
-import { cacheLife } from "next/cache";
 
 const cerebras = new Cerebras({
   apiKey: process.env.CEREBRAS_API_KEY,
@@ -9,7 +8,6 @@ const cerebras = new Cerebras({
 
 async function getBotInfo() {
   "use cache";
-  cacheLife("hours");
   return lineBotClient.getBotInfo();
 }
 
