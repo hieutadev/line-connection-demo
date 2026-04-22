@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 p-6 gap-6">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm flex flex-col items-center gap-3">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm flex flex-col items-center gap-3">
         <Avatar className="size-20">
           <AvatarImage src={data?.pictureUrl} alt={data?.userId} />
           <AvatarFallback>{data?.displayName.substring(0, 1)}</AvatarFallback>
@@ -58,7 +58,7 @@ export default function Home() {
         </Button>
       </div>
       {botInfo && (
-        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm flex items-center gap-3">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm flex items-center gap-3">
           <ReactQRCode
             value={`https://line.me/R/ti/p/${botInfo.basicId}`}
             size={80}
@@ -70,7 +70,7 @@ export default function Home() {
           />
           <div className="flex flex-col">
             <div className="flex items-center gap-1 mb-1">
-              <Avatar className="size-10">
+              <Avatar className="size-9">
                 <AvatarImage src={botInfo.pictureUrl} alt={botInfo.basicId} />
                 <AvatarFallback>
                   {botInfo.displayName.substring(0, 1)}
@@ -80,11 +80,12 @@ export default function Home() {
                 <div className="flex gap-0.5 items-center">
                   <span>{botInfo.displayName}</span>
                   <Badge
-                    className={
+                    className={cn(
+                      "text-[10px]",
                       status
                         ? "bg-green-50 text-green-700"
-                        : "bg-red-50 text-red-700"
-                    }
+                        : "bg-red-50 text-red-700",
+                    )}
                   >
                     {status ? "Connected" : "Not connected"}
                   </Badge>
