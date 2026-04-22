@@ -1,18 +1,28 @@
 import lineBotClient from "@/lib/line-bot";
 import { MessageEvent } from "@/types/webhook-events";
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
+import { cacheLife } from "next/cache";
 
 const cerebras = new Cerebras({
   apiKey: process.env.CEREBRAS_API_KEY,
 });
 
+async function getBotInfo() {
+  "use cache";
+  cacheLife("hours");
+  return lineBotClient.getBotInfo();
+}
+
 export default async function handleMessageEvent(event: MessageEvent) {
+  const botInfo = await getBotInfo();
   switch (event.message.type) {
     case "text":
       const isDirectTrigger = event.source?.type === "user";
       const isGroupTrigger =
         event.source?.type === "group" &&
-        event.message.text.trim().toLowerCase().startsWith("/pika ");
+        event.message.mention?.mentionees.some(
+          (v) => v.userId === botInfo.userId,
+        );
       if (isDirectTrigger || isGroupTrigger) {
         const completion = await cerebras.chat.completions.create({
           messages: [
