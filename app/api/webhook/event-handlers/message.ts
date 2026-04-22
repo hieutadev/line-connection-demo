@@ -6,13 +6,8 @@ const cerebras = new Cerebras({
   apiKey: process.env.CEREBRAS_API_KEY,
 });
 
-async function getBotInfo() {
-  "use cache";
-  return lineBotClient.getBotInfo();
-}
-
 export default async function handleMessageEvent(event: MessageEvent) {
-  const botInfo = await getBotInfo();
+  const botInfo = await lineBotClient.getBotInfo();
   switch (event.message.type) {
     case "text":
       const isDirectTrigger = event.source?.type === "user";
