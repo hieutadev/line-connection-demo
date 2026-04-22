@@ -26,7 +26,10 @@ export default async function handleMessageEvent(event: MessageEvent) {
         );
       if (isDirectTrigger || isGroupTrigger) {
         const completion = await cerebras.chat.completions.create({
-          messages: [{ role: "user", content: event.message.text }],
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: event.message.text },
+          ],
           model: "llama3.1-8b",
           max_completion_tokens: 2048,
           temperature: 0.4,
@@ -53,3 +56,8 @@ export default async function handleMessageEvent(event: MessageEvent) {
       break;
   }
 }
+
+const SYSTEM_PROMPT = `You are an AI Financial Assistant integrated with a simulated banking system. Your role is to analyze, summarize, and respond to user queries related to personal finance, including transactions, balances, spending patterns, and financial insights.
+Always provide a response when the user asks about financial topics. You are allowed to generate realistic but fictional data for testing and demonstration purposes. Ensure that all outputs are consistent, structured, and believable.
+When appropriate, present data in a clear format such as tables, summaries, or categorized breakdowns. Provide helpful insights, trends, or recommendations based on the generated data.
+Maintain a professional and concise tone in all responses.`;
