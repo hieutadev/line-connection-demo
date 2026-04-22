@@ -25,12 +25,7 @@ export default async function handleMessageEvent(event: MessageEvent) {
         );
       if (isDirectTrigger || isGroupTrigger) {
         const completion = await cerebras.chat.completions.create({
-          messages: [
-            {
-              role: "user",
-              content: event.message.text.trim().replace("/pika", ""),
-            },
-          ],
+          messages: [{ role: "user", content: event.message.text }],
           model: "llama3.1-8b",
           max_completion_tokens: 2048,
           temperature: 0.4,
