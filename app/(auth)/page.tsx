@@ -8,17 +8,21 @@ import useBotInfo from "@/hooks/useBotInfo";
 import useUserProfile from "@/hooks/useUserProfile";
 import { signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { QRCodeSVG } from "qrcode.react";
+import { ReactQRCode } from "@lglab/react-qr-code";
 import { useTransition } from "react";
 
 export default function Home() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { data, isLoading } = useUserProfile();
-  const { data: status, mutate: mutateStatus, isLoading: isLoadingStatus } = useBotConnectionStatus(data?.userId);
+  const {
+    data: status,
+    mutate: mutateStatus,
+    isLoading: isLoadingStatus,
+  } = useBotConnectionStatus(data?.userId);
   const { data: botInfo } = useBotInfo();
 
   const handleSignOut = () => {
@@ -55,13 +59,14 @@ export default function Home() {
       </div>
       {botInfo && (
         <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm flex items-center gap-3">
-          <QRCodeSVG
+          <ReactQRCode
             value={`https://line.me/R/ti/p/${botInfo.basicId}`}
-            title="QR code for adding the bot as a friend"
             size={80}
-            bgColor={"#ffffff"}
-            fgColor={"#000000"}
-            level={"L"}
+            level="L"
+            minVersion={1}
+            marginSize={1}
+            dataModulesSettings={{ style: "square-sm" }}
+            finderPatternOuterSettings={{ style: "rounded-sm" }}
           />
           <div className="flex flex-col">
             <div className="flex items-center gap-1 mb-1">
@@ -83,8 +88,18 @@ export default function Home() {
                   >
                     {status ? "Connected" : "Not connected"}
                   </Badge>
-                  <Button className="size-5" variant="ghost" disabled={!status} onClick={() => mutateStatus()}>
-                    <RefreshCcw className={cn('size-3', isLoadingStatus && "animate-spin")} />
+                  <Button
+                    className="size-5"
+                    variant="ghost"
+                    disabled={!status}
+                    onClick={() => mutateStatus()}
+                  >
+                    <RefreshCcw
+                      className={cn(
+                        "size-3",
+                        isLoadingStatus && "animate-spin",
+                      )}
+                    />
                   </Button>
                 </div>
                 <span className="text-xs text-gray-500">{botInfo.basicId}</span>
