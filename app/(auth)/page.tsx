@@ -93,7 +93,14 @@ export default function Home() {
             <span className="text-sm text-gray-600">
               Add the bot as a friend
             </span>
-            <span className="text-xs text-gray-500">{`https://line.me/R/ti/p/${botInfo.basicId}`}</span>
+            <a
+              href={`https://line.me/R/ti/p/${botInfo.basicId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-500 hover:underline"
+            >
+              {`https://line.me/R/ti/p/${botInfo.basicId}`}
+            </a>
           </div>
         </div>
       )}
